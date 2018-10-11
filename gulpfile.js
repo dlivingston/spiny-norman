@@ -39,7 +39,7 @@ watchify.args.debug = true;
 var devBundler = watchify(browserify('./src/js/main.js', watchify.args));
 devBundler.transform(babelify.configure({
     sourceMapRelative: 'src/js',
-    presets: ["es2015"]
+    presets: ['es2015', 'react']
 }));
 devBundler.transform('uglifyify', { global: true });
 devBundler.on('update', devBundle);
@@ -47,7 +47,7 @@ devBundler.on('update', devBundle);
 var prodBundler = browserify('./src/js/main.js', { debug: true });
 prodBundler.transform(babelify.configure({
     sourceMapRelative: 'src/js',
-    presets: ["es2015"]
+    presets: ['es2015', 'react']
 }));
 prodBundler.transform('uglifyify', { global: true });
 
@@ -111,7 +111,9 @@ gulp.task('images', function () {
 
 gulp.task('sass', function () {
     return gulp.src(src.scss)
-        .pipe(sass()).on('error', sass.logError)
+        .pipe(sass({
+            includePaths: ['node_modules/bootstrap/scss/']
+        })).on('error', sass.logError)
         .pipe(cssmin())
         .pipe(rename({ suffix: '-min' }))
         .pipe(dev(replace('@__PATHVAR__@', '../')))
